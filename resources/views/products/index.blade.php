@@ -255,7 +255,8 @@
   /*wazaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa*/
 
   /* Contenedor flex */
-  .contenedor {  /* to make espacios entre las tarjetas CLAVE*/
+  .contenedor {
+    /* to make espacios entre las tarjetas CLAVE*/
     display: flex;
     /* Activa flexbox */
     gap: 40px;
@@ -291,16 +292,21 @@
     padding: 20px 0;
   }
 
+  .slider-card-item {
+    flex: 0 0 calc(33.33% - 20px);
+    /* El 33.33% ocupa 1/3 del espacio */
+    /* El "- 20px" es para dejar espacio al 'gap' (espacio entre tarjetas) */
+    box-sizing: border-box;
+  }
+
   .slider-wrapper {
     display: flex;
-    /* Pone las tarjetas una al lado de la otra */
     gap: 20px;
-    padding: 10px;
+    /* Este valor debe coincidir con el que restamos arriba */
+    overflow-x: hidden;
     scroll-behavior: smooth;
-    overflow-x: auto;
-    /* Permite scroll manual en móviles */
-    scrollbar-width: none;
-    /* Oculta la barra de scroll en Firefox */
+    padding: 15px 5px;
+    width: 100%;
   }
 
   .slider-wrapper::-webkit-scrollbar {
@@ -344,6 +350,8 @@
 
 <body>
 
+
+
   <h2>Tarjetas lado a lado</h2>
 
   <div class="contenedor">
@@ -363,6 +371,7 @@
     <h1>Product Catalog</h1>
     <div class="row contenedor">
       @foreach ($products as $product)
+        </form>
         <div class="col-md-4 ">
           <div class="cardd ">
             <img src="{{ $product->image }}" class="card-img-top"
@@ -377,6 +386,13 @@
           </div>
         </div>
       @endforeach
+      {{-- <form action="{{ route('cart.add', $product->product_id) }}"
+        method="POST">
+        @csrf
+        <button type="submit" class="btn btn-success">
+          Agregar al carrito
+        </button> --}}
+      </form>
     </div>
 
 
@@ -450,6 +466,13 @@
                   </svg>
 
                 </div>
+                <form action="{{ route('cart.add', $product->product_id) }}"
+                  method="POST">
+                  @csrf
+                  <button type="submit" class="btn btn-success">
+                    Agregar al carrito
+                  </button>
+                </form>
               </div>
             </div>
           </div>
@@ -465,30 +488,42 @@
     function moveSlider(direction) {
       const track = document.getElementById('slider-track');
 
-      // 1. Verificamos que el contenedor exista
-      if (!track) {
-        console.error(
-          "Error: No se encontró el ID 'slider-track'. Revisa tu HTML.");
-        return;
-      }
-
-      // 2. Buscamos la primera tarjeta para medirla
-      const card = track.querySelector('.slider-card-item');
-
-      if (card) {
-        // Medimos el ancho de la tarjeta + el espacio (gap)
-        const style = window.getComputedStyle(track);
-        const gap = parseInt(style.columnGap) || 20;
-        const scrollAmount = (card.offsetWidth + gap) * 2; // Mover de 2 en 2
+      if (track) {
+        // clientWidth es el ancho que el usuario ve actualmente en su pantalla
+        // Al usar este valor, nos aseguramos de mover "una página completa"
+        const scrollAmount = track.clientWidth;
 
         track.scrollBy({
           left: direction * scrollAmount,
           behavior: 'smooth'
         });
-      } else {
-        console.warn(
-          "No se encontraron tarjetas con la clase '.slider-card-item'");
       }
+      // const track = document.getElementById('slider-track');
+
+      // // 1. Verificamos que el contenedor exista
+      // if (!track) {
+      //   console.error(
+      //     "Error: No se encontró el ID 'slider-track'. Revisa tu HTML.");
+      //   return;
+      // }
+
+      // // 2. Buscamos la primera tarjeta para medirla
+      // const card = track.querySelector('.slider-card-item');
+
+      // if (card) {
+      //   // Medimos el ancho de la tarjeta + el espacio (gap)
+      //   const style = window.getComputedStyle(track);
+      //   const gap = parseInt(style.columnGap) || 20;
+      //   const scrollAmount = (card.offsetWidth + gap) * 2; // Mover de 2 en 2
+
+      //   track.scrollBy({
+      //     left: direction * scrollAmount,
+      //     behavior: 'smooth'
+      //   });
+      // } else {
+      //   console.warn(
+      //     "No se encontraron tarjetas con la clase '.slider-card-item'");
+      // }
     }
   </script>
 

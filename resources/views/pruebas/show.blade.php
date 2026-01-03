@@ -1,0 +1,1 @@
+el id ingresado es : {id} {$elId} {{ $elId }}
